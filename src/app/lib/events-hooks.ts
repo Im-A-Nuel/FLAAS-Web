@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { connectToPolkadot } from './polkadot';
+import type { EventRecord } from '@polkadot/types/interfaces';
 
 export interface BlockchainEvent {
   blockNumber: number;
@@ -35,7 +36,7 @@ export const useBlockchainEvents = () => {
         try {
           const blockHash = await api.rpc.chain.getBlockHash(blockNum);
           const apiAt = await api.at(blockHash);
-          const eventsAtBlock = await apiAt.query.system.events();
+          const eventsAtBlock = await apiAt.query.system.events() as unknown as EventRecord[];
 
           // Get block timestamp
           const timestamp = await apiAt.query.timestamp.now();
@@ -81,7 +82,7 @@ export const useBlockchainEvents = () => {
           const blockNumber = header.number.toNumber();
           const blockHash = await api.rpc.chain.getBlockHash(blockNumber);
           const apiAt = await api.at(blockHash);
-          const eventsAtBlock = await apiAt.query.system.events();
+          const eventsAtBlock = await apiAt.query.system.events() as unknown as EventRecord[];
           const timestamp = await apiAt.query.timestamp.now();
           const blockTime = new Date(Number(timestamp.toString()));
 

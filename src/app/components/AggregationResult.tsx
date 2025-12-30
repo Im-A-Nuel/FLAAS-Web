@@ -3,11 +3,11 @@ import { IoStatsChartOutline } from "react-icons/io5";
 
 interface AggregationResultProps {
   result: {
-    method: string;
-    num_clients: number;
-    num_layers: number;
-    avg_global_weight: number;
-    avg_global_weight_change_percent: number;
+    method?: string;
+    num_clients?: number;
+    num_layers?: number;
+    avg_global_weight?: number;
+    avg_global_weight_change_percent?: number;
   } | null;
 }
 
@@ -30,25 +30,25 @@ export default function AggregationResult({ result }: AggregationResultProps) {
         <div className="bg-white/10 rounded p-2">
           <div className="text-xs text-indigo-100 mb-1">Jumlah Bobot/Weight:</div>
           <div className="text-sm font-bold text-white">
-            {result.avg_global_weight.toFixed(6)}
+            {result.avg_global_weight?.toFixed(6) || '0.000000'}
           </div>
         </div>
 
         <div className="bg-white/10 rounded p-2">
           <div className="text-xs text-indigo-100 mb-1">Weight Change:</div>
           <div className="text-sm font-bold text-white">
-            {result.avg_global_weight_change_percent.toFixed(6)}
+            {result.avg_global_weight_change_percent?.toFixed(6) || '0.000000'}
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-2">
           <div className="bg-white/10 rounded p-2">
             <div className="text-xs text-indigo-100">Clients</div>
-            <div className="text-sm font-semibold text-white">{result.num_clients}</div>
+            <div className="text-sm font-semibold text-white">{result.num_clients || 0}</div>
           </div>
           <div className="bg-white/10 rounded p-2">
             <div className="text-xs text-indigo-100">Layers</div>
-            <div className="text-sm font-semibold text-white">{result.num_layers}</div>
+            <div className="text-sm font-semibold text-white">{result.num_layers || 0}</div>
           </div>
         </div>
       </div>

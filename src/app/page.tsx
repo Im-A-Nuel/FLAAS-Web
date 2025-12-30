@@ -50,13 +50,13 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<TabId>("dashboard");
   const [showWalletDropdown, setShowWalletDropdown] = useState(false);
   const [aggregationResult, setAggregationResult] = useState<{
-    method: string;
-    num_clients: number;
-    num_layers: number;
-    avg_global_weight: number;
-    avg_global_weight_change_percent: number;
-    client_mean_weight: Record<string, number>;
-    client_mean_weight_percentage: Record<string, number>;
+    method?: string;
+    num_clients?: number;
+    num_layers?: number;
+    avg_global_weight?: number;
+    avg_global_weight_change_percent?: number;
+    client_mean_weight?: Record<string, number>;
+    client_mean_weight_percentage?: Record<string, number>;
     saved?: string;
   } | null>(null);
 
@@ -183,7 +183,7 @@ export default function Home() {
 
   // Get contribution data from aggregation result for a specific bank
   const getBankContribution = (bankName: string, bankIndex: number): { meanWeight: number; percentage: number } => {
-    if (!aggregationResult) {
+    if (!aggregationResult || !aggregationResult.client_mean_weight) {
       return { meanWeight: 0, percentage: 0 };
     }
 
@@ -196,7 +196,7 @@ export default function Home() {
       const filenameLower = filename.toLowerCase().replace(/\s+/g, '');
       if (filenameLower.includes(normalizedBankName)) {
         const meanWeight = aggregationResult.client_mean_weight[filename];
-        const percentage = aggregationResult.client_mean_weight_percentage[filename] || 0;
+        const percentage = aggregationResult.client_mean_weight_percentage?.[filename] || 0;
         return { meanWeight, percentage };
       }
     }
@@ -210,7 +210,7 @@ export default function Home() {
           filenameLower.includes(`client_${clientNumber}`) ||
           filenameLower.includes(`client ${clientNumber}`)) {
         const meanWeight = aggregationResult.client_mean_weight[filename];
-        const percentage = aggregationResult.client_mean_weight_percentage[filename] || 0;
+        const percentage = aggregationResult.client_mean_weight_percentage?.[filename] || 0;
         return { meanWeight, percentage };
       }
     }
@@ -219,7 +219,7 @@ export default function Home() {
     if (clientKeys.length > bankIndex) {
       const filename = clientKeys[bankIndex];
       const meanWeight = aggregationResult.client_mean_weight[filename];
-      const percentage = aggregationResult.client_mean_weight_percentage[filename] || 0;
+      const percentage = aggregationResult.client_mean_weight_percentage?.[filename] || 0;
       return { meanWeight, percentage };
     }
 
@@ -314,7 +314,7 @@ export default function Home() {
   const getAccountTransactions = (address: string) => {
     return records
       .filter(record => record.who.toLowerCase() === address.toLowerCase())
-      .sort((a, b) => b.timestamp - a.timestamp);
+      .sort((a, b) => b.id - a.id);
   };
 
   const handleRegisterAccount = async (adminAccount: string, accountToRegister: string, institutionName: string) => {

@@ -6,10 +6,11 @@ interface Transaction {
   id: number;
   who: string;
   modelHash: string;
+  institution: string;
+  atBlock: number;
   accuracy: number;
-  ipfsCid: string;
-  note: string;
-  timestamp: number;
+  ipfsCid?: string;
+  note?: string;
 }
 
 interface TransactionHistoryProps {
@@ -35,15 +36,8 @@ export default function TransactionHistory({
 
   if (!isOpen || !mounted) return null;
 
-  const formatTimestamp = (timestamp: number) => {
-    const date = new Date(timestamp);
-    return date.toLocaleString('id-ID', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  const formatBlockNumber = (blockNumber: number) => {
+    return `Block #${blockNumber}`;
   };
 
   const formatAccuracy = (accuracy: number) => {
@@ -109,7 +103,7 @@ export default function TransactionHistory({
                           </h3>
                           <div className="flex items-center gap-2 text-sm text-gray-500 mt-0.5">
                             <IoTimeOutline className="text-xs" />
-                            <span>{formatTimestamp(tx.timestamp)}</span>
+                            <span>{formatBlockNumber(tx.atBlock)}</span>
                           </div>
                         </div>
                       </div>
@@ -130,12 +124,14 @@ export default function TransactionHistory({
                         </div>
                       </div>
 
-                      <div className="bg-white rounded-lg p-3 border border-gray-100">
-                        <div className="text-xs text-gray-500 mb-1">IPFS CID</div>
-                        <div className="text-sm font-mono text-gray-900 break-all">
-                          {tx.ipfsCid.slice(0, 20)}...{tx.ipfsCid.slice(-20)}
+                      {tx.ipfsCid && (
+                        <div className="bg-white rounded-lg p-3 border border-gray-100">
+                          <div className="text-xs text-gray-500 mb-1">IPFS CID</div>
+                          <div className="text-sm font-mono text-gray-900 break-all">
+                            {tx.ipfsCid.slice(0, 20)}...{tx.ipfsCid.slice(-20)}
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
 
                     {tx.note && (
@@ -146,16 +142,18 @@ export default function TransactionHistory({
                     )}
 
                     {/* View Links */}
-                    <div className="flex gap-2 mt-3">
-                      <a
-                        href={`https://ipfs.io/ipfs/${tx.ipfsCid}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1"
-                      >
-                        View on IPFS →
-                      </a>
-                    </div>
+                    {tx.ipfsCid && (
+                      <div className="flex gap-2 mt-3">
+                        <a
+                          href={`https://ipfs.io/ipfs/${tx.ipfsCid}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1"
+                        >
+                          View on IPFS →
+                        </a>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
